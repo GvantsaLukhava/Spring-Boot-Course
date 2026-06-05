@@ -1,40 +1,88 @@
-package com.inventory.api.dto.request;
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-import jakarta.validation.constraints.*;
-import lombok.Data;
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+        <relativePath/>
+    </parent>
 
-import java.math.BigDecimal;
+    <groupId>com.inventory</groupId>
+    <artifactId>inventory-api</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>inventory-api</name>
+    <description>Inventory Management API</description>
 
-/**
- * DTO for creating/updating a Product.
- *
- * Notice we accept categoryId (a Long) rather than a full Category object.
- * This is typical REST design - reference related resources by their ID.
- */
-@Data
-public class ProductRequest {
+    <properties>
+        <java.version>17</java.version>
+    </properties>
 
-    @NotBlank(message = "Product name is required")
-    @Size(min = 2, max = 200, message = "Name must be between 2 and 200 characters")
-    private String name;
+    <dependencies>
+        <!-- Web: gives us REST controllers, HTTP server (Tomcat), etc. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
-    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
-    private String description;
+        <!-- JPA: Java Persistence API - lets us map Java classes to DB tables -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
 
-    @NotNull(message = "Price is required")
-    @DecimalMin(value = "0.00", inclusive = false, message = "Price must be greater than 0")
-    @Digits(integer = 8, fraction = 2, message = "Price format invalid (max 8 digits, 2 decimal places)")
-    private BigDecimal price;
+        <!-- Validation: @NotNull, @Size, @Min, @Max annotations on DTOs -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
 
-    @NotNull(message = "Quantity is required")
-    @Min(value = 0, message = "Quantity cannot be negative")
-    private Integer quantity;
+        <!-- PostgreSQL driver: connects our app to the Postgres database -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
-    @Size(max = 100, message = "SKU cannot exceed 100 characters")
-    private String sku;
+        <!-- Lombok: reduces boilerplate - auto-generates getters/setters/constructors -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-    private Boolean active;
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-    @NotNull(message = "Category ID is required")
-    private Long categoryId;
-}
+        <!-- H2 in-memory DB for tests only -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
